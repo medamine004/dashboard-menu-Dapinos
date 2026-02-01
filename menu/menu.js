@@ -38,7 +38,7 @@ function initRealTimeMenu() {
     onSnapshot(q, (snapshot) => {
         // Mapping + Filtrage (actifs uniquement)
         menu = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-                            .filter(p => p.active === true);
+                            .filter(p => p.active !== false);
         
         if(menu.length > 0) {
             categories = [...new Set(menu.map(p => p.cat))];
