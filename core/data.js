@@ -16,12 +16,13 @@ import {
 
 // 🔥 إعدادات Firebase الحقيقية (صحيحة)
 const firebaseConfig = {
-  apiKey: "AIzaSyDgBp2JC51ADRcYtLLB-ksfZKrZcZbLJg",
-  authDomain: "dashboard-menu-digital.firebaseapp.com",
-  projectId: "dashboard-menu-digital",
-  storageBucket: "dashboard-menu-digital.firebasestorage.app",
-  messagingSenderId: "1042043501192",
-  appId: "1:1042043501192:web:81fbc8cf05a3e017877d3d"
+  apiKey: "AIzaSyAJQyAOJ-K5jBbS8w52Cp1CUSHOQko1HF8",
+  authDomain: "dashboard-menu-dapinos.firebaseapp.com",
+  projectId: "dashboard-menu-dapinos",
+  storageBucket: "dashboard-menu-dapinos.firebasestorage.app",
+  messagingSenderId: "144285023821",
+  appId: "1:144285023821:web:7cf1f385f59ceb3801a604",
+ 
 };
 
 // Initialisation Firebase
