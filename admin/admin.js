@@ -13,7 +13,7 @@ const IMGBB_API_KEY = "daad728bfd5bc5f2739a9612b27c1410";
 
 // --- SÉCURITÉ ---
 if (!sessionStorage.getItem('admin_auth')) {
-    window.location.href = 'login.html';
+    window.location.href = '../login.html';
 }
 
 // Variables Globales
