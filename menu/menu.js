@@ -5,7 +5,7 @@ import {
     db, collection, onSnapshot, addDoc, query, orderBy, serverTimestamp 
 } from "../core/data.js";
 
-const WHATSAPP_NUMBER = "21628042023"; 
+const WHATSAPP_NUMBER = "21658052184"; 
 const PLACEHOLDER_IMG = "https://placehold.co/400x300?text=Image+Non+Dispo";
 
 // État
