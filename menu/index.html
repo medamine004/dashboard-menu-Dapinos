@@ -3,108 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nextra Menu</title>
+    <title>Menu Digital • Premium</title>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                fontFamily: { sans: ['Outfit', 'sans-serif'] },
                 extend: {
-                    colors: { background: '#050505', surface: '#121212', primary: '#d4af37' },
-                    boxShadow: { 'glow': '0 0 15px -3px rgba(212, 175, 55, 0.2)' }
+                    colors: {
+                        background: '#050505', /* Noir profond */
+                        surface: '#121212',    /* Cartes */
+                        border: '#222222',     /* Bordures subtiles */
+                        primary: '#d4af37',    /* Or Premium */
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px rgba(0,0,0,0.4)',
+                        'glow': '0 0 15px rgba(212, 175, 55, 0.15)',
+                    }
                 }
             }
         }
     </script>
+
     <style>
         body { background-color: #050505; -webkit-tap-highlight-color: transparent; }
+        
+        /* Masquer scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .glass { background: rgba(5,5,5,0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .dish-card { animation: fadeUp 0.4s ease-out forwards; }
-        @keyframes fadeUp { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
-        #drawer { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Effet Glass */
+        .glass {
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .dish-card { animation: fadeInUp 0.4s ease-out forwards; }
+        
+        #drawer { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
         #drawer.open { transform: translateX(0); }
-        .toast { background:#1a1a1a; color:#fff; border:1px solid #333; padding:10px 20px; border-radius:50px; position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0; transition:0.3s; z-index:60; display:flex; gap:10px; align-items:center; }
-        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-        .toast i { color: #d4af37; }
+        
+        /* Toasts */
+        .toast {
+            background: #18181b; color: white; border: 1px solid #333;
+            padding: 12px 24px; border-radius: 50px;
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+            opacity: 0; transition: all 0.3s; z-index: 60;
+            display: flex; gap: 10px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen pb-28">
+<body class="text-gray-200 min-h-screen pb-32">
 
-    <header class="fixed top-0 left-0 right-0 z-40 glass">
-        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+    <header class="fixed top-0 left-0 right-0 z-40 glass transition-all duration-300">
+        <div class="max-w-lg mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20"><i class="fa-solid fa-utensils text-xs"></i></div>
-                <div><h1 class="font-bold text-base text-white">NEXTRA</h1><span class="text-[10px] text-primary font-bold uppercase tracking-widest">Menu</span></div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center border border-primary/30 text-primary">
+                    <i class="fa-solid fa-utensils text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-none tracking-tight text-white">NEXTRA</h1>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-[0.2em]">Fine Dining</span>
+                </div>
             </div>
-            <button onclick="openCart()" class="relative w-9 h-9 rounded-full bg-surface border border-white/10 flex items-center justify-center active:bg-white/10 transition-colors">
-                <i class="fa-solid fa-bag-shopping text-gray-300 text-sm"></i>
-                <span id="nav-badge" class="absolute -top-1 -right-1 bg-primary text-black text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center hidden shadow-glow">0</span>
+
+            <button onclick="openCart()" class="relative w-10 h-10 rounded-full bg-surface border border-white/10 flex items-center justify-center hover:bg-white/5 active:scale-95 transition-all">
+                <i class="fa-solid fa-bag-shopping text-gray-300"></i>
+                <span id="nav-badge" class="absolute -top-1 -right-1 bg-primary text-black text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center hidden shadow-glow">0</span>
             </button>
         </div>
-        <div class="max-w-md mx-auto px-4 pb-3 overflow-x-auto no-scrollbar">
-            <div id="cat-list" class="flex gap-2 min-w-max"></div>
+
+        <div class="max-w-lg mx-auto px-4 pb-3 overflow-x-auto no-scrollbar">
+            <div id="cat-list" class="flex gap-2 min-w-max">
+                </div>
         </div>
     </header>
-    <div class="h-28"></div>
 
-    <main class="max-w-md mx-auto px-3">
-        <div id="menu-list" class="grid grid-cols-2 gap-3"></div>
+    <div class="pt-28 pb-4 max-w-lg mx-auto px-4">
+        <div class="relative w-full h-44 rounded-2xl overflow-hidden shadow-card group">
+            <img src="https://images.unsplash.com/photo-1514362545857-3bc16549766b?q=80&w=2070&auto=format&fit=crop" 
+                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                 alt="Restaurant Cover">
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-5">
+                <span class="bg-primary text-black text-[10px] font-bold px-2 py-0.5 rounded w-fit mb-2">OUVERT</span>
+                <h2 class="text-2xl font-bold text-white leading-tight">Bienvenue chez<br>Nextra</h2>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-lg mx-auto px-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">La Carte</h3>
+            <div class="h-[1px] flex-1 bg-white/10 ml-4"></div>
+        </div>
+
+        <div id="menu-list" class="grid grid-cols-2 gap-3">
+            </div>
     </main>
 
-    <div id="drawer" class="fixed inset-y-0 right-0 w-full max-w-[320px] bg-[#0a0a0a] z-50 transform translate-x-full shadow-2xl flex flex-col border-l border-white/10">
-        <div class="p-4 border-b border-white/10 flex justify-between items-center bg-surface">
-            <h2 class="font-bold text-lg text-white">Panier</h2>
-            <button onclick="closeCart()" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-        </div>
+    <div id="drawer" class="fixed inset-y-0 right-0 w-full max-w-[360px] bg-[#080808] z-50 transform translate-x-full shadow-2xl flex flex-col border-l border-white/10">
         
-        <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+        <div class="p-5 border-b border-white/5 flex justify-between items-center bg-surface/50 backdrop-blur-md">
+            <h2 class="font-bold text-xl text-white flex items-center gap-2">
+                Mon Panier <span class="text-primary">.</span>
+            </h2>
+            <button onclick="closeCart()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
 
-        <div class="p-4 bg-surface border-t border-white/10">
-            <div class="mb-5 bg-black p-1.5 rounded-xl flex text-xs font-bold uppercase relative">
-                <label class="flex-1 cursor-pointer z-10">
+        <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="flex flex-col items-center justify-center h-full opacity-30">
+                <i class="fa-solid fa-basket-shopping text-4xl mb-2"></i>
+                <span class="text-sm">Votre panier est vide</span>
+            </div>
+        </div>
+
+        <div class="p-5 bg-surface border-t border-white/5 space-y-4">
+            
+            <div class="grid grid-cols-2 bg-black p-1 rounded-xl gap-1">
+                <label class="cursor-pointer">
                     <input type="radio" name="orderType" value="A Emporter" class="peer hidden" checked onchange="toggleTableInput()">
-                    <div class="py-3 text-center rounded-lg text-gray-500 peer-checked:text-white transition-all"><i class="fa-solid fa-bag-shopping mr-1"></i> Emporter</div>
-                    <div class="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-white/10 rounded-lg opacity-0 peer-checked:opacity-100 transition-all"></div>
+                    <div class="py-3 text-center text-xs font-bold uppercase rounded-lg text-gray-500 peer-checked:bg-white/10 peer-checked:text-white transition-all">
+                        <i class="fa-solid fa-bag-shopping mr-1"></i> Emporter
+                    </div>
                 </label>
-                <label class="flex-1 cursor-pointer z-10">
+                <label class="cursor-pointer">
                     <input type="radio" name="orderType" value="Sur Place" class="peer hidden" onchange="toggleTableInput()">
-                    <div class="py-3 text-center rounded-lg text-gray-500 peer-checked:text-black transition-all"><i class="fa-solid fa-utensils mr-1"></i> Sur Place</div>
-                    <div class="absolute inset-y-1.5 right-1.5 w-[calc(50%-6px)] bg-primary rounded-lg opacity-0 peer-checked:opacity-100 transition-all shadow-glow"></div>
+                    <div class="py-3 text-center text-xs font-bold uppercase rounded-lg text-gray-500 peer-checked:bg-primary peer-checked:text-black transition-all">
+                        <i class="fa-solid fa-utensils mr-1"></i> Sur Place
+                    </div>
                 </label>
             </div>
 
-            <div id="table-group" class="mb-5 hidden">
-                <div class="bg-[#0a0a0a] border border-white/10 border-l-4 border-l-primary rounded-r-lg p-3">
-                    <label class="block text-[10px] text-primary font-bold uppercase mb-1">Numéro de table requis</label>
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded bg-white/5 flex items-center justify-center text-gray-400"><i class="fa-solid fa-chair text-sm"></i></div>
-                        <input type="number" id="table-num" placeholder="Ex: 12" class="flex-1 bg-transparent border-none text-white font-bold text-lg focus:ring-0 p-0 outline-none">
+            <div id="table-group" class="hidden animate-fade-in">
+                <div class="bg-black/50 border border-primary/30 rounded-xl p-3 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <i class="fa-solid fa-chair"></i>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] text-gray-400 uppercase font-bold mb-1">Numéro de table</label>
+                        <input type="number" id="table-num" placeholder="Ex: 12" 
+                               class="w-full bg-transparent border-none text-white font-bold text-lg p-0 focus:ring-0 placeholder-gray-600">
                     </div>
                 </div>
             </div>
 
-            <div class="flex justify-between items-end mb-4 px-1">
-                <span class="text-gray-500 text-[10px] uppercase">Total</span>
-                <span id="cart-total" class="text-2xl font-bold text-primary">0.0 DT</span>
+            <div class="flex justify-between items-end">
+                <div>
+                    <span class="text-gray-500 text-xs font-medium uppercase">Total à payer</span>
+                    <div id="cart-total" class="text-2xl font-bold text-primary font-mono mt-1">0.0 DT</div>
+                </div>
+                <button onclick="order()" class="bg-gradient-to-r from-primary to-yellow-600 text-black font-bold px-8 py-3.5 rounded-xl shadow-glow active:scale-95 transition-transform flex items-center gap-2">
+                    <span>Valider</span> <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
-            <button onclick="order()" class="w-full bg-primary text-black font-extrabold py-4 rounded-xl flex items-center justify-center gap-3 shadow-glow active:scale-95 transition-transform">
-                <span>CONFIRMER</span><i class="fa-brands fa-whatsapp text-lg"></i>
-            </button>
         </div>
     </div>
-    
+
     <div onclick="closeCart()" id="overlay" class="fixed inset-0 bg-black/90 backdrop-blur-[2px] z-40 hidden transition-opacity opacity-0"></div>
+
     <div id="toast-container"></div>
 
     <script>
-        const d = document.getElementById('drawer'), o = document.getElementById('overlay');
-        window.openCart = () => { d.classList.add('open'); o.classList.remove('hidden'); setTimeout(()=>o.classList.remove('opacity-0'),10); }
-        window.closeCart = () => { d.classList.remove('open'); o.classList.add('opacity-0'); setTimeout(()=>o.classList.add('hidden'),300); }
+        const drawer = document.getElementById('drawer');
+        const overlay = document.getElementById('overlay');
+        
+        window.openCart = () => {
+            drawer.classList.add('open');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        }
+        
+        window.closeCart = () => {
+            drawer.classList.remove('open');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
     </script>
+    
     <script type="module" src="menu.js"></script>
+
 </body>
 </html>
