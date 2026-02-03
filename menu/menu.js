@@ -1,15 +1,17 @@
 /**
- * MENU JS
+ * MENU JS - UI UPDATE
+ * Logique intacte, Design Premium
  */
 import { db, collection, onSnapshot, addDoc, query, orderBy, serverTimestamp } from "../core/data.js";
 
 const WHATSAPP_NUMBER = "21658052184"; 
-const PLACEHOLDER_IMG = "https://placehold.co/400x300?text=Image";
+const PLACEHOLDER_IMG = "https://placehold.co/400x300?text=No+Image";
 
 let menu = [], categories = [], activeCat = "", cart = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     initRealTimeMenu();
+    // Exposition globale des fonctions existantes
     window.addToCart = addToCart;
     window.filter = filter;
     window.order = order;
@@ -17,7 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleTableInput = () => {
         const grp = document.getElementById('table-group');
         const isSurPlace = document.querySelector('input[name="orderType"]:checked').value === 'Sur Place';
-        grp.classList.toggle('hidden', !isSurPlace);
+        // Affichage conditionnel propre (Tailwind)
+        if(isSurPlace) grp.classList.remove('hidden');
+        else grp.classList.add('hidden');
     };
 });
 
@@ -27,36 +31,61 @@ function initRealTimeMenu() {
         if(menu.length){
             categories = [...new Set(menu.map(p => p.cat))];
             if(!activeCat || !categories.includes(activeCat)) activeCat = categories[0];
-            renderCats(); renderMenu();
+            renderCats(); 
+            renderMenu();
         } else {
-            document.getElementById('menu-list').innerHTML = `<div style="text-align:center;padding:2rem;color:#555">Menu vide</div>`;
+            document.getElementById('menu-list').innerHTML = `<div class="col-span-2 text-center py-10 text-gray-500">Menu indisponible</div>`;
         }
     });
 }
 
+// 🎨 DESIGN CATÉGORIES (Pillules)
 function renderCats() {
     const c = document.getElementById('cat-list');
     if(!c) return;
     c.innerHTML = categories.map(cat => 
-        `<button class="${cat===activeCat?'bg-primary text-black font-bold border-primary shadow-glow':'bg-surface text-gray-400 border-white/10'} border px-3 py-1.5 rounded-md text-[11px] uppercase tracking-wider whitespace-nowrap transition-all active:scale-95" onclick="filter('${cat}')">${cat}</button>`
+        `<button class="${cat===activeCat ? 'bg-primary text-black font-bold shadow-glow border-primary' : 'bg-surface text-gray-400 border-white/10 hover:bg-white/5'} 
+         border px-4 py-2 rounded-full text-xs uppercase tracking-wider whitespace-nowrap transition-all active:scale-95" 
+         onclick="filter('${cat}')">
+            ${cat}
+        </button>`
     ).join('');
 }
 
 function filter(c) { activeCat = c; renderCats(); renderMenu(); }
 
+// 🎨 DESIGN PRODUIT (Carte Compacte Carrée)
 function renderMenu() {
     const g = document.getElementById('menu-list');
     if(!g) return;
     const items = menu.filter(p => p.cat === activeCat);
+    
+    if(items.length === 0) {
+        g.innerHTML = `<div class="col-span-2 text-center text-gray-500 py-10 text-sm">Aucun produit dans cette catégorie</div>`;
+        return;
+    }
+
     g.innerHTML = items.map(item => `
-        <div class="dish-card group bg-surface border border-white/10 rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 relative">
-            <div class="relative w-full aspect-[4/3] bg-gray-900 border-b border-white/5">
-                <img src="${item.img}" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
-                <button onclick="addToCart('${item.id}')" class="absolute bottom-1.5 right-1.5 w-7 h-7 bg-white text-black rounded flex items-center justify-center shadow-lg active:scale-90 transition-transform hover:bg-primary z-10"><i class="fa-solid fa-plus text-xs"></i></button>
+        <div class="dish-card group bg-surface border border-white/10 rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 relative shadow-card">
+            <div class="relative w-full aspect-square bg-gray-900 border-b border-white/5">
+                <img src="${item.img}" 
+                     class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-700" 
+                     loading="lazy" 
+                     onerror="this.src='${PLACEHOLDER_IMG}'">
+                
+                <div class="absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-xs font-bold text-white border border-white/10">
+                    ${parseFloat(item.price).toFixed(1)} <span class="text-[9px] text-primary">DT</span>
+                </div>
+
+                <button onclick="addToCart('${item.id}')" 
+                        class="absolute bottom-2 right-2 w-8 h-8 bg-white text-black rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-transform hover:bg-primary z-10">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
             </div>
-            <div class="p-2.5">
-                <h3 class="font-semibold text-gray-100 text-xs leading-snug line-clamp-2 mb-1.5">${item.name}</h3>
-                <span class="text-primary font-bold text-sm">${parseFloat(item.price).toFixed(1)} <span class="text-[9px] text-gray-400">DT</span></span>
+
+            <div class="p-3">
+                <h3 class="font-semibold text-gray-100 text-sm leading-tight line-clamp-1 mb-1">${item.name}</h3>
+                <p class="text-[10px] text-gray-500 line-clamp-1">${item.cat}</p>
             </div>
         </div>
     `).join('');
@@ -67,7 +96,8 @@ function addToCart(id) {
     if(!p) return;
     const ex = cart.find(x => x.id === id);
     if(ex) ex.qty++; else cart.push({...p, qty:1});
-    updateCart(); showToast(p.name + " ajouté");
+    updateCart(); 
+    showToast(`${p.name} ajouté !`);
 }
 
 function modQty(id, d) {
@@ -78,6 +108,7 @@ function modQty(id, d) {
     updateCart();
 }
 
+// 🎨 DESIGN PANIER (Liste Pro + Boutons Larges)
 function updateCart() {
     const cnt = cart.reduce((a,b)=>a+b.qty,0);
     const badge = document.getElementById('nav-badge');
@@ -87,20 +118,29 @@ function updateCart() {
     let total = 0;
     
     if(cart.length === 0) {
-        div.innerHTML = `<div class="text-center text-gray-600 mt-10 text-sm">Panier vide</div>`;
+        div.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-64 text-gray-600 opacity-50">
+            <i class="fa-solid fa-cart-shopping text-5xl mb-3"></i>
+            <p class="text-sm">Votre panier est vide</p>
+        </div>`;
     } else {
         div.innerHTML = cart.map(i => {
             total += i.price * i.qty;
             return `
-            <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5 mb-3">
+            <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
                 <div class="flex-1">
-                    <h4 class="font-bold text-gray-200 text-sm mb-1">${i.name}</h4>
-                    <div class="text-primary text-xs font-mono">${parseFloat(i.price).toFixed(1)} DT</div>
+                    <h4 class="font-bold text-gray-200 text-sm leading-tight">${i.name}</h4>
+                    <div class="text-primary text-xs font-mono mt-1">${parseFloat(i.price).toFixed(1)} DT</div>
                 </div>
-                <div class="flex items-center gap-3 bg-black/40 rounded-full p-1 border border-white/10 ml-3">
-                    <button onclick="modQty('${i.id}', -1)" class="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-300"><i class="fa-solid fa-minus text-[10px]"></i></button>
-                    <span class="font-bold text-sm min-w-[16px] text-center text-white font-mono">${i.qty}</span>
-                    <button onclick="modQty('${i.id}', 1)" class="w-7 h-7 rounded-full bg-primary text-black flex items-center justify-center shadow-glow"><i class="fa-solid fa-plus text-[10px]"></i></button>
+
+                <div class="flex items-center gap-3 bg-black rounded-full p-1 border border-white/10">
+                    <button onclick="modQty('${i.id}', -1)" class="w-8 h-8 rounded-full bg-surface text-gray-400 hover:text-white flex items-center justify-center transition-colors active:bg-white/10">
+                        <i class="fa-solid fa-minus text-xs"></i>
+                    </button>
+                    <span class="font-bold text-sm min-w-[20px] text-center text-white font-mono">${i.qty}</span>
+                    <button onclick="modQty('${i.id}', 1)" class="w-8 h-8 rounded-full bg-primary text-black flex items-center justify-center shadow-glow active:scale-90 transition-transform">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
                 </div>
             </div>`;
         }).join('');
@@ -109,15 +149,23 @@ function updateCart() {
 }
 
 async function order() {
-    if(!cart.length) return showToast("Panier vide");
+    if(!cart.length) return showToast("Votre panier est vide");
+    
     const type = document.querySelector('input[name="orderType"]:checked').value;
     const table = document.getElementById('table-num').value;
-    if(type === 'Sur Place' && !table) return alert("Numéro de table requis !");
+    
+    // Validation stricte UI
+    if(type === 'Sur Place' && !table) {
+        document.getElementById('table-num').focus();
+        document.getElementById('table-group').classList.add('animate-pulse'); // Effet visuel
+        setTimeout(() => document.getElementById('table-group').classList.remove('animate-pulse'), 500);
+        return showToast("Veuillez entrer votre table !");
+    }
     
     const oid = "CMD-" + Math.floor(1000+Math.random()*9000);
     const tot = cart.reduce((a,b)=>a+(b.price*b.qty),0);
     
-    showToast("Envoi...");
+    showToast("Envoi de la commande...", true);
     
     try {
         await addDoc(collection(db, "orders"), {
@@ -125,18 +173,23 @@ async function order() {
             timestamp: serverTimestamp(), status: 'pending'
         });
         
-        let msg = `🧾 *COMMANDE ${oid}*\n🏷️ *${type}* ${table?'('+table+')':''}\n────────────────\n`;
+        let msg = `🧾 *COMMANDE ${oid}*\n🏷️ *${type}* ${table?'(Table '+table+')':''}\n────────────────\n`;
         cart.forEach(i => msg += `▪️ ${i.qty}x ${i.name}\n`);
         msg += `────────────────\n💰 *TOTAL: ${tot.toFixed(1)} DT*`;
         
         cart=[]; updateCart(); window.closeCart();
         setTimeout(() => window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, 1000);
-    } catch(e) { alert("Erreur connexion"); }
+    } catch(e) { 
+        console.error(e);
+        showToast("Erreur de connexion"); 
+    }
 }
 
-function showToast(m) {
+function showToast(m, persistent=false) {
     const c = document.getElementById('toast-container');
-    const t = document.createElement('div'); t.className="toast show";
-    t.innerHTML = `<i class="fa-solid fa-check"></i><span>${m}</span>`;
-    c.appendChild(t); setTimeout(()=>t.remove(), 2500);
+    const t = document.createElement('div'); 
+    t.className="toast show";
+    t.innerHTML = `<i class="fa-solid fa-circle-check text-primary"></i><span>${m}</span>`;
+    c.appendChild(t); 
+    if(!persistent) setTimeout(()=>t.remove(), 2500);
 }
